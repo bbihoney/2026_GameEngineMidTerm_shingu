@@ -6,6 +6,10 @@ TagManager:
   tags:
   - Boundary
   - Enemy
+  - Obstacle
+  - Item
+  - SpeedItem
+  - JumpItem
   layers:
   - Default
   - TransparentFX

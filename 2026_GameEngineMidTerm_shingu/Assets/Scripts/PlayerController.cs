@@ -15,11 +15,43 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded;
     private float moveInput;
 
+    // =====================
+    // Item: Jump Boost
+    // =====================
+    [Header("Item: Jump Boost")]
+    public float jumpBoostMultiplier = 1.5f;
+    public float jumpBoostTime = 5f;
+    private float originalJumpForce;
+
+    // =====================
+    // Item: Speed Boost
+    // =====================
+    [Header("Item: Speed Boost")]
+    public float speedBoostMultiplier = 2f;
+    public float speedBoostTime = 5f;
+    private float originalMoveSpeed;
+    private bool isMakingGhost = false;
+
+    // =====================
+    // Item: Invincibility
+    // =====================
+    [Header("Item: Invincibility")]
+    public bool isInvincible = false;
+    public float invincibilityTime = 3f;
+    private SpriteRenderer spriteRenderer;
+
+    void Start()
+    {
+        originalJumpForce = jumpForce;
+        originalMoveSpeed = moveSpeed;
+    }
+
     private void Awake()
     {
 
         rb = GetComponent<Rigidbody2D>();
         pAni = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     private void Update()
@@ -27,9 +59,9 @@ public class PlayerController : MonoBehaviour
         rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
 
         if (moveInput < 0)
-            transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+            transform.localScale = new Vector3(1, 1, 1);
         else if (moveInput > 0)
-            transform.localScale = new Vector3(-0.5f, 0.5f, 0.5f);
+            transform.localScale = new Vector3(-1, 1, 1);
 
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
     }
@@ -70,5 +102,61 @@ public class PlayerController : MonoBehaviour
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
+
+        // =====================
+        // Item 처리
+        // =====================
+        if (collision.CompareTag("Item"))
+        {
+            Destroy(collision.gameObject);
+
+            isInvincible = true;
+            spriteRenderer.color = new Color(1f, 1f, 1f, 0.5f);
+
+            Invoke(nameof(ResetInvincibility), invincibilityTime);
+            return;
+        }
+
+        if (collision.CompareTag("SpeedItem"))
+        {
+            Destroy(collision.gameObject);
+
+            moveSpeed = originalMoveSpeed * speedBoostMultiplier;
+            isMakingGhost = true;
+
+            Invoke(nameof(ResetSpeed), speedBoostTime);
+            return;
+        }
+
+        if (collision.CompareTag("JumpItem"))
+        {
+            Destroy(collision.gameObject);
+
+            jumpForce = originalJumpForce * jumpBoostMultiplier;
+
+            // 색 변경
+            spriteRenderer.color = new Color(0.5f, 1f, 0.5f, 1f);
+
+            Invoke(nameof(ResetJump), jumpBoostTime);
+            return;
+        }
+    }
+
+    void ResetInvincibility()
+    {
+        isInvincible = false;
+        spriteRenderer.color = Color.white;
+    }
+
+    void ResetSpeed()
+    {
+        moveSpeed = originalMoveSpeed;
+        isMakingGhost = false;
+    }
+
+    void ResetJump()
+    {
+        jumpForce = originalJumpForce;
+        spriteRenderer.color = Color.white;
     }
 }
