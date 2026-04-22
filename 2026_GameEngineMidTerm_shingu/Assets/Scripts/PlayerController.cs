@@ -59,9 +59,9 @@ public class PlayerController : MonoBehaviour
         rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
 
         if (moveInput < 0)
-            transform.localScale = new Vector3(1, 1, 1);
-        else if (moveInput > 0)
             transform.localScale = new Vector3(-1, 1, 1);
+        else if (moveInput > 0)
+            transform.localScale = new Vector3(1, 1, 1);
 
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
     }
@@ -89,7 +89,11 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.CompareTag("Respawn"))
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            if(isInvincible == false)
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            }
+            
         }
 
         if (collision.CompareTag("Finish"))
@@ -100,6 +104,7 @@ public class PlayerController : MonoBehaviour
 
         if (collision.CompareTag("Enemy"))
         {
+            if (isInvincible) return;
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
 
