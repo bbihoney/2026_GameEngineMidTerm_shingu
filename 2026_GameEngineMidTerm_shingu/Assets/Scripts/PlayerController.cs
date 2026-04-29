@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class PlayerController : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class PlayerController : MonoBehaviour
     private Animator pAni;
     private bool isGrounded;
     private float moveInput;
+
+    float score;
 
     // =====================
     // Item: Jump Boost
@@ -52,6 +55,8 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         pAni = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        score = 0f;
+
     }
 
     private void Update()
@@ -98,6 +103,7 @@ public class PlayerController : MonoBehaviour
 
         if (collision.CompareTag("Finish"))
         {
+            HighScore.TrySet(SceneManager.GetActiveScene().buildIndex, (int)score);
 
             collision.GetComponent<LevelObject>().MoveToNextLevel();
         }
@@ -113,6 +119,7 @@ public class PlayerController : MonoBehaviour
         // =====================
         if (collision.CompareTag("Item"))
         {
+            score += 10f;
             Destroy(collision.gameObject);
 
             isInvincible = true;
@@ -120,6 +127,7 @@ public class PlayerController : MonoBehaviour
 
             Invoke(nameof(ResetInvincibility), invincibilityTime);
             return;
+           
         }
 
         if (collision.CompareTag("SpeedItem"))

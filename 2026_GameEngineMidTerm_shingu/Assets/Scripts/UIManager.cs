@@ -5,7 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
-    public GameObject HelpPanel;
+    public GameObject helpPanel;
+    public GameObject leaderPanel;
 
     public void GameStartButtonAction()
     {
@@ -14,12 +15,21 @@ public class UIManager : MonoBehaviour
 
     public void OpenHelpPanel()
     {
-        HelpPanel.SetActive(true);
+        helpPanel.SetActive(true);
     }
 
     public void CloseHelpPanel()
     {
-        HelpPanel.SetActive(false);
+        helpPanel.SetActive(false);
+    }
+    public void OpenLeaderPanel()
+    {
+        leaderPanel.SetActive(true);
+    }
+
+    public void CloseLeaderPanel()
+    {
+        leaderPanel.SetActive(false);
     }
     public void GameClose()
     {
