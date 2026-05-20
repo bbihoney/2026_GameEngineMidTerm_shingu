@@ -103,8 +103,8 @@ public class PlayerController : MonoBehaviour
 
         if (collision.CompareTag("Finish"))
         {
-            HighScore.TrySet(SceneManager.GetActiveScene().buildIndex, (int)score);
-
+            //HighScore.TrySet(SceneManager.GetActiveScene().buildIndex, (int)score);
+            StageResultSaver.SaveStage(SceneManager.GetActiveScene().buildIndex, (int)score);
             collision.GetComponent<LevelObject>().MoveToNextLevel();
         }
 
@@ -123,6 +123,7 @@ public class PlayerController : MonoBehaviour
             Destroy(collision.gameObject);
 
             isInvincible = true;
+            score += collision.GetComponent<ItemObject>().GetPoint();
             spriteRenderer.color = new Color(1f, 1f, 1f, 0.5f);
 
             Invoke(nameof(ResetInvincibility), invincibilityTime);
